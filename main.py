@@ -87,6 +87,18 @@ def janken_play():
                            is_win=is_win)
 
 
+# 4. 占いアプリの入力フォーム
+@app.route('/uranai')
+def uranai():
+    return render_template('uranai_form.html')
+
+
+# 5. 占いデータ送信先と占い結果表示画面
+@app.route('/uranai/play', methods=["POST"])
+def uranai_play():
+    pass
+
+
 if __name__ == '__main__':
     # portは適宜書き換えてください
     app.run(host="0.0.0.0", port=DEFAULT_PORT, debug=True)

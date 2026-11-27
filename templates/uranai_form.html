@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>本日の運勢診断 - 占いアプリ</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='uranai.css') }}">
+</head>
+<body>
+  <main class="uranai_card">
+    <header class="uranai_header">
+      <p class="uranai_subtitle">DAILY FORTUNE COMPASS</p>
+      <h1>本日の運勢診断</h1>
+    </header>
+    <form action="/uranai/play" method="POST" class="uranai_form" novalidate>
+      <div class="form_field">
+        <label for="birthday">生年月日</label>
+        <input type="date" id="birthday" name="birthday">
+        <span class="field_hint">カレンダーから選択、または yyyy-MM-dd 形式で入力</span>
+      </div>
+      <div class="form_field">
+        <label for="name">名前</label>
+        <input type="text" id="name" name="name" placeholder="例：愛工太郎">
+        <span class="field_hint">生年月日と名前の文字数から今日の運勢インデックスを算出します</span>
+      </div>
+      <button type="submit" class="submit_btn">占う</button>
+    </form>
+    <footer class="uranai_footer">
+      <a href="/" class="back_top_link">トップページへ戻る</a>
+    </footer>
+  </main>
+</body>
+</html>
