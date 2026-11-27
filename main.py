@@ -53,22 +53,26 @@ def janken_play():
         cpu = random.choice(list(JANKEN_HANDS))
 
     # じゃんけん処理
+    is_win = False
     if hand == cpu:
         result_message = "あいこ"
     else:
         if hand == "rock":
             if cpu == "scissor":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         elif hand == "scissor":
             if cpu == "paper":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         elif hand == "paper":
             if cpu == "rock":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         else:
@@ -79,7 +83,8 @@ def janken_play():
                            result_message=result_message,
                            name=name,
                            hand=hand,
-                           cpu=cpu)
+                           cpu=cpu,
+                           is_win=is_win)
 
 
 if __name__ == '__main__':

@@ -77,6 +77,24 @@ class JankenAppTestCase(unittest.TestCase):
         self.assertIn("janken_choki.png", html)
         self.assertNotIn("mark_batsu.png", html)
 
+    def test_win_message_is_red_only_when_player_wins(self):
+        """プレイヤーが勝った場合のみ結果メッセージの h2 タグが赤文字になり、それ以外では赤文字にならないことを確認する。"""
+        with patch("main.random.choice", return_value="scissor"):
+            win_html = self.client.post("/janken/play", data={"name": "太郎", "hand": "rock"}).get_data(as_text=True)
+            self.assertIn('<h2 style="color: red;">太郎の勝ち</h2>', win_html)
+
+            draw_html = self.client.post("/janken/play", data={"name": "太郎", "hand": "scissor"}).get_data(as_text=True)
+            self.assertIn("<h2>あいこ</h2>", draw_html)
+            self.assertNotIn('style="color: red;"', draw_html)
+
+            lose_html = self.client.post("/janken/play", data={"name": "太郎", "hand": "paper"}).get_data(as_text=True)
+            self.assertIn("<h2>太郎の負け</h2>", lose_html)
+            self.assertNotIn('style="color: red;"', lose_html)
+
+        late_html = self.client.post("/janken/play", data={"name": "太郎"}).get_data(as_text=True)
+        self.assertIn("<h2>後出しはダメです。</h2>", late_html)
+        self.assertNotIn('style="color: red;"', late_html)
+
 
 if __name__ == "__main__":
     unittest.main()
