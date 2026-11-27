@@ -95,6 +95,15 @@ class UranaiAppTestCase(unittest.TestCase):
         self.assertIn("入力不備で占えませんでした", invalid_html)
         self.assertIn('<strong class="rank_number">1</strong>', invalid_html)
 
+    def test_uranai_css_asset_is_served(self):
+        """占い画面用のカスタムCSS（/static/uranai.css）が配信され、5段階テーマとメーター定義を含むことを確認する。"""
+        css_res = self.client.get("/static/uranai.css")
+        self.assertEqual(css_res.status_code, 200)
+        css_text = css_res.get_data(as_text=True)
+        self.assertIn(".fortune_meter", css_text)
+        self.assertIn(".rank_theme_5", css_text)
+        css_res.close()
+
 
 if __name__ == "__main__":
     unittest.main()
