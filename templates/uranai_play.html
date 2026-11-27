@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>占い結果 - 本日の運勢診断</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='uranai.css') }}">
+</head>
+<body>
+  <main class="uranai_card">
+    <header class="uranai_header">
+      <p class="uranai_subtitle">FORTUNE DIAGNOSIS RESULT</p>
+      <h1>占い結果</h1>
+    </header>
+
+    <section class="profile_summary">
+      <div class="profile_item">
+        <span class="profile_label">お名前</span>
+        <span class="profile_value">{{ name }}</span>
+      </div>
+      <div class="profile_item">
+        <span class="profile_label">生年月日</span>
+        <span class="profile_value">{{ birthday }}</span>
+      </div>
+    </section>
+
+    <section class="result_panel rank_theme_{{ rank }} {% if not is_valid %}is_invalid{% endif %}">
+      <div class="rank_badge_row">
+        <span class="rank_title">{{ rank_label }}</span>
+        <span class="rank_score_box">占い結果：<strong class="rank_number">{{ rank }}</strong> / 5</span>
+      </div>
+
+      <div class="fortune_meter" role="progressbar" aria-valuenow="{{ rank }}" aria-valuemin="1" aria-valuemax="5">
+        <div class="fortune_meter_fill" style="width: {{ meter_percent }}%;"></div>
+      </div>
+
+      <div class="meter_scale">
+        <span class="scale_step {% if rank >= 1 %}active{% endif %}">1</span>
+        <span class="scale_step {% if rank >= 2 %}active{% endif %}">2</span>
+        <span class="scale_step {% if rank >= 3 %}active{% endif %}">3</span>
+        <span class="scale_step {% if rank >= 4 %}active{% endif %}">4</span>
+        <span class="scale_step {% if rank >= 5 %}active{% endif %}">5</span>
+      </div>
+
+      <p class="fortune_message">{{ message }}</p>
+    </section>
+
+    <footer class="uranai_actions">
+      <a href="/uranai" class="secondary_btn">もう一度占う</a>
+      <a href="/" class="back_top_link">トップページへ戻る</a>
+    </footer>
+  </main>
+</body>
+</html>
