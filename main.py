@@ -3,6 +3,15 @@ import random  # ランダムデータ作成のためのライブラリ
 
 app = Flask(__name__)
 
+# じゃんけんの有効な手と、接待モード時にCPUが出す負け手の対応表
+JANKEN_HANDS = ("rock", "scissor", "paper")
+LOSING_CPU_HAND_BY_PLAYER_HAND = {
+    "rock": "scissor",
+    "scissor": "paper",
+    "paper": "rock",
+}
+DEFAULT_PORT = 8888
+
 
 # 1. プロジェクトのトップ（じゃんけんアプリや、課題のアプリへのリンクを配置するだけ）
 @app.route('/')
@@ -22,7 +31,7 @@ def janken():
 def janken_play():
 
     # <input type="text" id="your_name" name="name">
-    name = request.form.get("name")
+    name = (request.form.get("name") or "").strip()
     if not name:
         name = "名無しさん"
 
@@ -31,26 +40,39 @@ def janken_play():
     # <input type="radio" id="hand_paper" value="paper" name="hand">
     hand = request.form.get("hand", None)
 
-    # リストの中からランダムに選ぶ
-    cpu = random.choice(["rock", "scissor", "paper"])
+    # <input type="checkbox" id="is_settai" name="is_settai" value="on">
+    is_settai = bool(request.form.get("is_settai"))
+
+    if is_settai:
+        # 接待モード時は後出し（未選択）であってもグーが出ていることにしてCPUが必ず負ける
+        if hand not in LOSING_CPU_HAND_BY_PLAYER_HAND:
+            hand = "rock"
+        cpu = LOSING_CPU_HAND_BY_PLAYER_HAND[hand]
+    else:
+        # リストの中からランダムに選ぶ
+        cpu = random.choice(list(JANKEN_HANDS))
 
     # じゃんけん処理
+    is_win = False
     if hand == cpu:
         result_message = "あいこ"
     else:
         if hand == "rock":
             if cpu == "scissor":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         elif hand == "scissor":
             if cpu == "paper":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         elif hand == "paper":
             if cpu == "rock":
                 result_message = "{}の勝ち".format(name)
+                is_win = True
             else:
                 result_message = "{}の負け".format(name)
         else:
@@ -61,9 +83,10 @@ def janken_play():
                            result_message=result_message,
                            name=name,
                            hand=hand,
-                           cpu=cpu)
+                           cpu=cpu,
+                           is_win=is_win)
 
 
 if __name__ == '__main__':
     # portは適宜書き換えてください
-    app.run(host="0.0.0.0", port=8888, debug=True)
+    app.run(host="0.0.0.0", port=DEFAULT_PORT, debug=True)
